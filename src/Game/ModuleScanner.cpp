@@ -1,25 +1,23 @@
 #include "Game/ModuleScanner.hpp"
-#include "Game/ProcMapsReader.hpp"
+#include <cstring>
 
-namespace PHX
-{
-    uintptr_t ModuleScanner::mBase = 0;
+namespace PHX {
 
-    bool ModuleScanner::Scan()
-    {
-        if (!ProcMapsReader::Refresh())
-            return false;
-
-        // Tahap berikutnya:
-        // Cari libGTASA.so dari daftar memory map.
-
-        mBase = 0;
-
-        return true;
+uintptr_t ModuleScanner::ScanPattern(uintptr_t base, size_t size, const char* pattern, const char* mask) {
+    size_t patternLen = std::strlen(mask);
+    for (size_t i = 0; i < size - patternLen; ++i) {
+        bool found = true;
+        for (size_t j = 0; j < patternLen; ++j) {
+            if (mask[j] != '?' && reinterpret_cast<const char*>(base + i)[j] != pattern[j]) {
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            return base + i;
+        }
     }
-
-    uintptr_t ModuleScanner::GetBase()
-    {
-        return mBase;
-    }
+    return 0;
 }
+
+} // namespace PHX
