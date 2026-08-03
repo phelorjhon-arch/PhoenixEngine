@@ -1,22 +1,19 @@
 #pragma once
 
-#include <string>
+#include "Game/ProcMapsReader.hpp"
 #include <vector>
-#include <uintptr_t.h>
 
 namespace PHX {
 
-struct MapEntry {
-    uintptr_t startAddress;
-    uintptr_t endAddress;
-    std::string permissions;
-    std::string path;
-};
-
-class ProcMapsReader {
+class MemoryMap {
 public:
-    static std::vector<MapEntry> Read();
-    static uintptr_t GetModuleBase(const std::string& moduleName);
+    static MemoryMap& Instance();
+    void Refresh();
+    const std::vector<MapEntry>& GetEntries() const { return m_entries; }
+
+private:
+    MemoryMap() = default;
+    std::vector<MapEntry> m_entries;
 };
 
 } // namespace PHX
