@@ -2,16 +2,21 @@
 
 #include <string>
 #include <vector>
+#include <uintptr_t.h>
 
-namespace PHX
-{
-    class ProcMapsReader
-    {
-    public:
-        static bool Refresh();
-        static const std::vector<std::string>& GetEntries();
+namespace PHX {
 
-    private:
-        static std::vector<std::string> mEntries;
-    };
-}
+struct MapEntry {
+    uintptr_t startAddress;
+    uintptr_t endAddress;
+    std::string permissions;
+    std::string path;
+};
+
+class ProcMapsReader {
+public:
+    static std::vector<MapEntry> Read();
+    static uintptr_t GetModuleBase(const std::string& moduleName);
+};
+
+} // namespace PHX
