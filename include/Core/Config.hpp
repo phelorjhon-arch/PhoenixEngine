@@ -1,8 +1,22 @@
 #pragma once
+
+#include <string>
+#include <unordered_map>
+
 namespace PHX {
-struct Config {
-    bool bloom=true;
-    float brightness=1.0f;
+
+class Config {
+public:
+    static Config& Instance();
+
+    bool LoadFromFile(const std::string& filePath);
+    std::string GetString(const std::string& section, const std::string& key, const std::string& defaultValue = "") const;
+    int GetInt(const std::string& section, const std::string& key, int defaultValue = 0) const;
+    bool GetBool(const std::string& section, const std::string& key, bool defaultValue = false) const;
+
+private:
+    Config() = default;
+    std::unordered_map<std::string, std::unordered_map<std::string, std::string>> m_data;
 };
-bool LoadPhoenixConfig(const char* path, Config& cfg);
-}
+
+} // namespace PHX
