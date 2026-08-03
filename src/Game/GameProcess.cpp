@@ -1,17 +1,14 @@
 #include "Game/GameProcess.hpp"
+#include <unistd.h>
 
-namespace PHX
-{
-    static bool gRunning = false;
+namespace PHX {
 
-    bool GameProcess::Initialize()
-    {
-        gRunning = true;
-        return true;
-    }
-
-    bool GameProcess::IsRunning()
-    {
-        return gRunning;
-    }
+pid_t GameProcess::GetCurrentPID() {
+    return getpid();
 }
+
+bool GameProcess::IsAlive() {
+    return getpid() > 0;
+}
+
+} // namespace PHX
