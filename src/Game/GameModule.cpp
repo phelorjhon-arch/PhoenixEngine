@@ -1,19 +1,13 @@
 #include "Game/GameModule.hpp"
+#include "Game/ProcMapsReader.hpp"
 
-namespace PHX
-{
-    uintptr_t GameModule::mBase = 0;
+namespace PHX {
 
-    bool GameModule::Locate()
-    {
-        // Placeholder.
-        // Tahap berikutnya akan mencari base address libGTASA.so.
-        mBase = 0;
-        return true;
-    }
+GameModule::GameModule(std::string name) : m_name(std::move(name)) {}
 
-    uintptr_t GameModule::GetBase()
-    {
-        return mBase;
-    }
+bool GameModule::Load() {
+    m_baseAddress = ProcMapsReader::GetModuleBase(m_name);
+    return m_baseAddress != 0;
 }
+
+} // namespace PHX
