@@ -1,59 +1,34 @@
 #include "Core/Engine.hpp"
 #include "Core/Logger.hpp"
-#include "Core/LibraryLoader.hpp"
-
-#include "Graphics/ShaderManager.hpp"
-#include "Graphics/Renderer.hpp"
-
-#include "Hook/HookManager.hpp"
 #include "Hook/RenderHook.hpp"
 
-namespace PHX
-{
+namespace PHX {
 
-bool InitializeEngine()
-{
-    if (!LibraryLoader::Initialize())
-    {
-        Logger::Error("Failed to initialize LibraryLoader");
+static bool g_engineInitialized = false;
+
+bool InitializeEngine() {
+    if (g_engineInitialized) return true;
+
+    Logger::Info("[Phoenix Engine] Initializing core modules...");
+
+    if (!InstallRenderHooks()) {
+        Logger::Error("[Phoenix Engine] Failed to install render hooks!");
         return false;
     }
 
-    static ShaderManager shaderManager;
-
-    if (!shaderManager.Initialize())
-    {
-        Logger::Error("Failed to initialize ShaderManager");
-        return false;
-    }
-
-    if (!InitializeRenderer())
-    {
-        Logger::Error("Failed to initialize Renderer");
-        return false;
-    }
-
-    if (!HookManager::Initialize())
-    {
-        Logger::Error("Failed to initialize HookManager");
-        return false;
-    }
-
-    if (!HookManager::InstallOpenGLHooks())
-    {
-        Logger::Error("Failed to install OpenGL hooks");
-        return false;
-    }
-
-    if (!InstallRenderHooks())
-    {
-        Logger::Error("Failed to install Render hooks");
-        return false;
-    }
-
-    Logger::Info("Engine initialized");
-
+    g_engineInitialized = true;
+    Logger::Info("[Phoenix Engine] Engine core initialized successfully.");
     return true;
 }
 
+void ShutdownEngine() {
+    if (!g_engineInitialized) return;
+    Logger::Info("[Phoenix Engine] Shutting down engine core...");
+    g_engineInitialized = false;
 }
+
+bool IsEngineInitialized() {
+    return g_engineInitialized;
+}
+
+} // namespace PHX
