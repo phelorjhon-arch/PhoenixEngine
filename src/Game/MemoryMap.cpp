@@ -1,16 +1,14 @@
 #include "Game/MemoryMap.hpp"
 
-namespace PHX
-{
-    bool MemoryMap::Refresh()
-    {
-        // Placeholder.
-        // Alpha berikutnya akan membaca /proc/self/maps.
-        return true;
-    }
+namespace PHX {
 
-    bool MemoryMap::Contains(const std::string&)
-    {
-        return false;
-    }
+MemoryMap& MemoryMap::Instance() {
+    static MemoryMap instance;
+    return instance;
 }
+
+void MemoryMap::Refresh() {
+    m_entries = ProcMapsReader::Read();
+}
+
+} // namespace PHX
