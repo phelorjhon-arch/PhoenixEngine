@@ -2,15 +2,18 @@
 
 #include <string>
 
-namespace PHX
-{
-    class GameVersion
-    {
-    public:
-        static bool Detect();
-        static std::string GetVersion();
+namespace PHX {
 
-    private:
-        static std::string mVersion;
-    };
-}
+enum class GTAVersion {
+    Unknown,
+    GTA_SA_2_00,
+    GTA_SA_2_10
+};
+
+class GameVersion {
+public:
+    static GTAVersion DetectVersion();
+    static std::string GetVersionName(GTAVersion version);
+};
+
+} // namespace PHX
